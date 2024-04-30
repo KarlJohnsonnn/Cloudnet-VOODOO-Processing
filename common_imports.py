@@ -23,19 +23,11 @@ import scienceplots
 from numba import jit
 from itertools import groupby, product
 
-
-# append the path to the rpgpy package
-sys.path.append('/home/schimmel/code/python/rpgpy')
 from rpgpy import read_rpg, spectra2moments
 
-
-# append the path to the voodoonet package
-sys.path.append('/home/schimmel/code/python/voodoonet')
 import voodoonet
 from voodoonet import utils, loader
 
-# append the path to the voodoonet package
-sys.path.append('/home/schimmel/code/python/cloudnetpy')
 import cloudnetpy
 from cloudnetpy.products import generate_classification
 from cloudnetpy.categorize import generate_categorize
