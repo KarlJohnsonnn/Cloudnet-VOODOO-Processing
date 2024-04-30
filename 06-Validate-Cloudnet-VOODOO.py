@@ -107,8 +107,7 @@ def VoodooAnalyser(
             lwp_dict,
             cbh_dict,
             liquid_masks,
-            f'{script_directory}/validation_csv/',
-            date_str,
+            f'{script_directory}/validation_csv/{date}-cloudnet-voodoo-validation.csv',
             site_meta['name']
         )
 
@@ -270,20 +269,14 @@ def VoodooAnalyser(
 
         fig, ax = ql_prediction()
         fig_name = f'{script_directory}/plots/{date_str}-{site_meta["name"]}-QL.png'
-        plt.show()
         fig.savefig(fig_name, facecolor='white', dpi=400)
         print(f' saved  {fig_name}')
 
 
 
 if __name__ == '__main__':
-    ''' Main program for testing
-    '''
-    t0 = time.time()
 
-
-    date = "20230217"
-    
+    date = "20230217"    
 
     # Required Input Files
     input_files = {

@@ -467,7 +467,7 @@ def get_cloud_base_from_liquid_mask(liq_mask, rg):
 
 
 
-def create_csv_file(rg, llt_dict, lwp_dict, cbh_dict, liquid_masks, csv_path, date_str, site):
+def create_csv_file(rg, llt_dict, lwp_dict, cbh_dict, liquid_masks, csv_path, site):
     
     def fetch_bin_edges_lwp_edr(lwp):
         lwp_bin_edges = [
@@ -586,19 +586,18 @@ def create_csv_file(rg, llt_dict, lwp_dict, cbh_dict, liquid_masks, csv_path, da
             )
 
     # LWP csv
-    change_dir(csv_path)
     try:
         stats_list = [
             [['', ] + int_columns + flt_columns + corr_columns + extra_columns] +
             [[f'{site}-lwp-bin{i}', ] + list(val) for i, val in enumerate(arr0[:len(lwp_masks) + 1, :])]
         ]
-        with open(f'{date_str}-make_csv2lwp.csv', 'w', encoding='UTF8') as f:
+        with open(csv_path, 'w', encoding='UTF8') as f:
             writer = csv.writer(f)
             writer.writerow(stats_list[0][0])
             for i, cloud in enumerate(stats_list[0][1:]):
                 writer.writerow(cloud)
     except:
-        print(f'No lwp file written! {date_str}')
+        print(f'No lwp file written! {csv_path}')
 
     return 0
 
