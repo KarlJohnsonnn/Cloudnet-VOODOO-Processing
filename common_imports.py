@@ -18,10 +18,10 @@ import time
 import warnings
 import csv
 from scipy.ndimage import gaussian_filter
-from scipy.interpolate import interp2d
+from scipy.interpolate import interp1d, interp2d
 import scienceplots
 from numba import jit
-
+from itertools import groupby, product
 
 
 # append the path to the rpgpy package
@@ -135,6 +135,14 @@ def _adjust_cloudnetpy_bits(cat_xr, values, status):
                 new_bits[ind_time, ind_range] = np.packbits(bit_rep)
     return new_bits
 
+
+def datetime64_to_decimalhour(ts_in):
+    ts = []
+    for i in range(len(ts_in)):
+        ts.append(ts_in[i].astype('datetime64[h]').astype(int) % 24 * 3600 +
+                  ts_in[i].astype('datetime64[m]').astype(int) % 60 * 60 +
+                  ts_in[i].astype('datetime64[s]').astype(int) % 60)
+    return np.array(ts) / 3600
 
 
 def dt_to_ts(dt):
@@ -312,7 +320,7 @@ def first_occurrence_indices(array):
     return np.array(out)
 
 
-def fetch_voodoo_status(rg, liquid_masks):
+def fetch_voodoo_status(rg, liquid_masks, liq_cbh):
 
     mliqVoodoo = liquid_masks['Voodoo']
     mliqCLoudnet = liquid_masks['Cloudnet']
@@ -323,8 +331,6 @@ def fetch_voodoo_status(rg, liquid_masks):
     FP_mask = ~mliqCLoudnet *  mliqVoodoo
     FN_mask =  mliqCLoudnet * ~mliqVoodoo
     TN_mask = ~mliqCLoudnet * ~mliqVoodoo
-
-    liq_cbh = first_occurrence_indices(liquid_masks['Cloudnet'])
 
     # Adjust masks based on the first liquid cloud base height
     for its, icb in enumerate(liq_cbh):
@@ -385,9 +391,83 @@ def change_dir(folder_path, **kwargs):
     os.chdir(folder_path)
     print('\ncd to: {}'.format(folder_path))
 
+def interpolate_cbh(ts_cloudnet, ts_ceilo, cbh, icb=0):
+
+    ts_ceilo = datetime64_to_decimalhour(ts_ceilo)
+
+    f = interp1d(
+        ts_ceilo,
+        cbh[:, icb],
+        kind='linear',
+        copy=True,
+        bounds_error=False,
+        fill_value=None
+    )
+    cbh = f(ts_cloudnet)[:]
+    cbh[np.isnan(cbh)] = -1
+    return cbh  # ceilo ts needs to be adapted for interpoaltion
 
 
-def create_csv_file(rg, llt_dict, lwp_dict, liquid_masks, csv_path, date_str, site):
+def compute_cbh(ceilo_cbh, liquid_masks, range_bins):
+    cbh = {'CEILO': ceilo_cbh}
+    for key in liquid_masks.keys():
+        _tmp = np.argmax(liquid_masks[key] == 1, axis=1)
+        cbh[key] = np.ma.masked_less_equal([range_bins[ind_rg] for ind_rg in _tmp], 200)
+        cbh[key] = np.ma.masked_invalid(cbh[key])
+    return cbh
+
+
+def find_bases_tops(mask, rg_list):
+    """
+    This function finds cloud bases and tops for a provided binary cloud mask.
+    Args:
+        mask (np.array, dtype=bool) : bool array containing False = signal, True=no-signal
+        rg_list (list) : list of range values
+
+    Returns:
+        cloud_prop (list) : list containing a dict for every time step consisting of cloud bases/top indices, range and width
+        cloud_mask (np.array) : integer array, containing +1 for cloud tops, -1 for cloud bases and 0 for fill_value
+    """
+    cloud_prop = []
+    cloud_mask = np.full(mask.shape, 0, dtype=np.int)
+    for ind_time in range(mask.shape[0]):  # tqdm(range(mask.shape[0]), ncols=100, unit=' time steps'):
+        cloud = [(k, sum(1 for j in g)) for k, g in groupby(mask[ind_time, :])]
+        idx_cloud_edges = np.cumsum([prop[1] for prop in cloud])
+        bases, tops = idx_cloud_edges[0:][::2][:-1], idx_cloud_edges[1:][::2]
+        if tops.size > 0 and tops[-1] == mask.shape[1]:
+            tops[-1] = mask.shape[1] - 1
+        cloud_mask[ind_time, bases] = -1
+        cloud_mask[ind_time, tops] = +1
+        cloud_prop.append({'idx_cb': bases, 'val_cb': rg_list[bases],  # cloud bases
+                           'idx_ct': tops, 'val_ct': rg_list[tops],  # cloud tops
+                           'width': [ct - cb for ct, cb in zip(rg_list[tops], rg_list[bases])]
+                           })
+    return cloud_prop, cloud_mask
+
+
+def get_cloud_base_from_liquid_mask(liq_mask, rg):
+    """
+    Function returns the time series of cloud base height in meter.
+    Args:
+        liq_mask:
+        rg: range values
+
+    Returns: cloud base height
+
+    """
+    _, cbct_mask = find_bases_tops(liq_mask * 1, rg)
+    n_ts = liq_mask.shape[0]
+
+    CB = np.full(n_ts, np.nan)
+
+    for ind_time in range(n_ts):
+        idx = np.argwhere(cbct_mask[ind_time, :] == -1)
+        CB[ind_time] = rg[int(idx[0])] if len(idx) > 0 else 0.0
+    return CB
+
+
+
+def create_csv_file(rg, llt_dict, lwp_dict, cbh_dict, liquid_masks, csv_path, date_str, site):
     
     def fetch_bin_edges_lwp_edr(lwp):
         lwp_bin_edges = [
@@ -401,26 +481,31 @@ def create_csv_file(rg, llt_dict, lwp_dict, liquid_masks, csv_path, date_str, si
         ]
         return lwp_masks
     
-    def all_correlations(llt, lwp, liquid_masks, bins, hmin=300):
+    def all_correlations(llt, lwp, cbh, liquid_masks, bins, hmin=300):
         corr_tmp = {}
         corr = {}
 
         for alg in liquid_masks.keys():
-            corr.update({alg + 'corr(LWP)-s': [], alg + 'corr(LLT)-s': []})
+            corr.update({alg + 'corr(LWP)-s': [], alg + 'corr(LLT)-s': [], alg + 'corr((L)CBH)': []})
 
             for bin_mask in bins:
                 llt_valid = (llt['Voodoo'] > 0.0) * (lwp['mwr_s'] > 0)
+                cei_valid = (cbh[alg] > hmin) * (cbh['CEILO'] > hmin)
 
                 mwrlwp = lwp['mwr_s'][np.argwhere(bin_mask * llt_valid)[:, 0]]
+                ceilcbh = cbh['CEILO'][np.argwhere(bin_mask * cei_valid)[:, 0]]
                 algollt = llt[alg + '_s'][np.argwhere(bin_mask * llt_valid)[:, 0]]
                 algolwp = lwp[alg + '_s'][np.argwhere(bin_mask * llt_valid)[:, 0]]
+                algocbh = cbh[alg][np.argwhere(bin_mask * cei_valid)[:, 0]]
 
                 corr[alg + 'corr(LLT)-s'].append(np.corrcoef(mwrlwp, algollt)[0, 1])
                 corr[alg + 'corr(LWP)-s'].append(np.corrcoef(mwrlwp, algolwp)[0, 1])
+                corr[alg + 'corr((L)CBH)'].append(np.corrcoef(ceilcbh, algocbh)[0, 1])
 
             corr_tmp[alg] = np.array([
                 corr[alg + 'corr(LLT)-s'],
                 corr[alg + 'corr(LWP)-s'],
+                corr[alg + 'corr((L)CBH)'],
             ])
         return corr_tmp
 
@@ -448,11 +533,11 @@ def create_csv_file(rg, llt_dict, lwp_dict, liquid_masks, csv_path, date_str, si
     
     lwp_masks = fetch_bin_edges_lwp_edr(lwp_dict['mwr_s'])
 
-    correlations_csv = all_correlations(llt_dict, lwp_dict, liquid_masks, lwp_masks, hmin=300)
+    correlations_csv = all_correlations(llt_dict, lwp_dict, cbh_dict, liquid_masks, lwp_masks, hmin=300)
 
     int_columns = ['TP', 'TN', 'FP', 'FN']
     flt_columns = ['precision', 'far', 'fpr', 'fbi', 'npv', 'recall', 'specificity', 'accuracy', 'F1-score', 'ets']
-    corr_columns = ['Vr2(LLT)', 'Vr2(LWP)', 'Cr2(LLT)', 'Cr2(LWP)']
+    corr_columns = ['Vr2(LLT)', 'Vr2(LWP)', 'Vr2(LCBH)', 'Cr2(LLT)', 'Cr2(LWP)', 'Cr2(LCBH)']
     extra_columns = ['n_time_steps']  # , 'ETS']
     num_columns = len(int_columns) + len(flt_columns) + len(corr_columns) + len(extra_columns)
 
@@ -465,7 +550,7 @@ def create_csv_file(rg, llt_dict, lwp_dict, liquid_masks, csv_path, date_str, si
         elif i == len(lwp_masks):
             _mask = np.zeros(_mask.shape)
 
-        voodoo_status_binned = fetch_voodoo_status(rg, liquid_masks)
+        voodoo_status_binned = fetch_voodoo_status(rg, liquid_masks, cbh_dict['CEILO'])
         if np.count_nonzero(_mask) == 0:
             continue
 

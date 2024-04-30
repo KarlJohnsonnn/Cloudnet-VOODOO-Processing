@@ -17,8 +17,23 @@ def VoodooAnalyser(
 
     data = {}
     for key, value in input_files.items():
-        data[key] = xr.open_dataset(value, decode_times=False)
+        if 'ceilo' in key.lower():
+            data[key] = xr.open_dataset(value)
+        else:
+            data[key] = xr.open_dataset(value, decode_times=False)
+            
 
+    try:
+        cbh0  = interpolate_cbh(
+            data['cat_cloudnet']['time'].values, 
+            data['ceilometer_1a']['time'].values,
+            data['ceilometer_1a']['cbh'].values, 
+            icb=0, 
+            ) 
+        #cbh0[cbh0 > 0] += site_meta['altitude']
+    except:
+        cbh0 = get_cloud_base_from_liquid_mask(liquid_masks['Cloudnet'], data['cat_cloudnet']['height'].values)
+        print('CBH0 from liquid mask')
 
     # set rain/precip flag
     is_raining = data['cat_cloudnet']['rain_detected'].values
@@ -60,6 +75,11 @@ def VoodooAnalyser(
         )
     valid_lwp = (0.0 < lwp_dict['mwr_s']) * (lwp_dict['mwr_s'] < 1000.0)
 
+    cbh_dict = compute_cbh(
+        cbh0, 
+        liquid_masks, 
+        data['cat_cloudnet']['height'].values
+        )
 
     correlations = correlation_llt_lwp(
         llt_dict, 
@@ -72,6 +92,7 @@ def VoodooAnalyser(
     voodoo_status = fetch_voodoo_status(
         data['cat_cloudnet']['height'].values,
         liquid_masks, 
+        cbh0
         )
     
     eval_metrics = fetch_evaluation_metrics(
@@ -84,6 +105,7 @@ def VoodooAnalyser(
             data['cat_cloudnet']['height'].values,
             llt_dict,
             lwp_dict,
+            cbh_dict,
             liquid_masks,
             f'{script_directory}/validation_csv/',
             date_str,
@@ -177,8 +199,6 @@ def VoodooAnalyser(
 
             voodoo_probability_cmap, voodoo_status_cmap = fetch_cmaps()
             p = liquid_threshold
-            liq_cbh = first_occurrence_indices(liquid_masks['Cloudnet'])
-            liq_cbh = np.ma.masked_where(liq_cbh == None, liq_cbh)
 
             vars = ['$Z_e$', '$v_D$', r'$\beta_\mathrm{att}$', r'$P_\mathrm{liq}$', r'$v_\sigma$', 'Cloudnet', 'Cloudnet + Voodoo', 'Voodoo status']
             units = ['[dBZ]', r'[m$\,$s$^{-1}$]', r'[sr$^{-1}\,$m$^{-1}$]', '[1]', r'[m$\,$s$^{-1}$]', '', '', '']
@@ -192,11 +212,14 @@ def VoodooAnalyser(
 
                 # 2. row
                 lprob = data['cat_voodoo']['liquid_prob'].values
-                #lprob[lprob < liquid_threshold] = 0.01
                 lprob = np.ma.masked_where(~liquid_masks['cloud_mask'], lprob)
                 p3 = ax[1, 0].pcolormesh(ts, rg, lprob.T, cmap=voodoo_probability_cmap, vmin=p, vmax=1)
-                #ax[1, 0].scatter(ts, rg[liq_cbh] * 0.001, marker='*', color='red', alpha=0.55, s=1.0e-3)
+                
+                cbh0 = np.ma.masked_less(cbh_dict['CEILO'], 0)
+                ax[1, 0].scatter(ts, cbh0 * 0.001, marker='*', color='red', alpha=0.55, s=1.0e-3)
+                
                 p4 = ax[1, 1].pcolormesh(ts, rg, data['cat_cloudnet']['v_sigma'].values.T, cmap='jet', norm=mpl.colors.LogNorm(vmin=1.0e-2, vmax=1.0))
+                
                 ax[1, 2] = add_lwp(ax[1, 2])
                 make_rainflag(ax[1, 2], ypos=-25)
 
@@ -264,6 +287,7 @@ if __name__ == '__main__':
 
     # Required Input Files
     input_files = {
+        'ceilometer_1a': f'{script_directory}/sample_data/{date}_Eriswil_CHM210109_000.nc',
         'cls_cloudnet': f'{script_directory}/sample_data/{date}_classification.nc',
         'cat_cloudnet': f'{script_directory}/sample_data/{date}_categorize.nc',
         'cls_voodoo':   f'{script_directory}/sample_data/{date}_classification_voodoo.nc',
