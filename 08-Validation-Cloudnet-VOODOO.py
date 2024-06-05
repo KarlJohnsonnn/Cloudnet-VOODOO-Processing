@@ -1,7 +1,5 @@
 # Import common imports
 from common_imports import *
-import pathlib
-script_directory = pathlib.Path(__file__).parent.resolve()
 
 print(script_directory)
 
@@ -276,28 +274,36 @@ def VoodooAnalyser(
 
 if __name__ == '__main__':
 
-    date = "20230217"    
+    date = "20230217"
+    date = "20240108"
 
     # Required Input Files
+    # input_files = {
+    #     'ceilometer_1a': f'{script_directory}/sample_data/{date}_Eriswil_CHM210109_000.nc',
+    #     'cls_cloudnet': f'{script_directory}/sample_data/{date}_classification.nc',
+    #     'cat_cloudnet': f'{script_directory}/sample_data/{date}_categorize.nc',
+    #     'cls_voodoo':   f'{script_directory}/sample_data/{date}_classification_voodoo.nc',
+    #     'cat_voodoo':   f'{script_directory}/sample_data/{date}_categorize_voodoo.nc',
+    # }
     input_files = {
-        'ceilometer_1a': f'{script_directory}/sample_data/{date}_Eriswil_CHM210109_000.nc',
-        'cls_cloudnet': f'{script_directory}/sample_data/{date}_classification.nc',
-        'cat_cloudnet': f'{script_directory}/sample_data/{date}_categorize.nc',
-        'cls_voodoo':   f'{script_directory}/sample_data/{date}_classification_voodoo.nc',
-        'cat_voodoo':   f'{script_directory}/sample_data/{date}_categorize_voodoo.nc',
+        'ceilometer_1a': f'/data/eriswil/cloudnet/input/ceilo_raw/{date}_Eriswil_CHM210109_000.nc',
+        'cls_cloudnet': f'/data/eriswil/cloudnet/classification/cloudnet_only/{date}_classification.nc',
+        'cat_cloudnet': f'/data/eriswil/cloudnet/categorize/cloudnet_only/{date}_categorize.nc',
+        'cls_voodoo':   f'/data/eriswil/cloudnet/classification/cloudnet_only/{date}_classification_voodoo.nc',
+        'cat_voodoo':   f'/data/eriswil/cloudnet/categorize/cloudnet_only/{date}_categorize_voodoo.nc',
     }
 
     
     #site_meta = {'name': 'Punta-Arenas', 'altitude': 9}
     #site_meta = {'name': 'Leipzig, LIM', 'altitude': 117}
-    site_meta = {'name': 'Eriswil',      'altitude': 923}
+    site_meta = {'name': 'Eriswfil',      'altitude': 923}
 
 
     VoodooAnalyser(
         date,
         site_meta=site_meta,
         input_files=input_files,
-        liquid_threshold=0.5,
+        liquid_threshold=0.45,
         n_lwp_smoothing=40,  # in sec
         do_QL_plot=True,
         do_csv=True,

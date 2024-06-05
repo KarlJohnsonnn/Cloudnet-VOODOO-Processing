@@ -1,0 +1,19 @@
+[eriswil]
+    output_root = "/data/eriswil/cloudnet/v1.61.10/voodoo-trainingsets/"
+    lv0_path = "/data/eriswil/instruments/rpg94/"
+    classification_path = "/data/eriswil/cloudnet/v1.61.10/products/"
+
+[leipzig-tropos]
+    output_root = "/data/LACROS/leipzig-tropos/cloudnet/v1.61.10/voodoo-trainingsets/"
+    lv0_path = "/data/LACROS/leipzig-tropos/instruments/rpg94/"
+    classification_path = "/data/LACROS/leipzig-tropos/cloudnet/v1.61.10/products/"
+
+[punta-arenas]
+    output_root = "/data/LACROS/cloudnet/data/punta-arenas/v1.61.10/voodoo-trainingsets/"
+    lv0_path = "/data/LACROS/limrad94/data/"
+    classification_path = "/data/LACROS/cloudnet/data/punta-arenas/v1.61.10/products/"
+
+[leipzig-lim]
+    output_root = "/data/leipzig/cloudnet/v1.61.10/voodoo-trainingsets/"
+    lv0_path = "/data/leipzig/instruments/limrad94/"
+    classification_path = "/data/leipzig/cloudnet/v1.61.10/products/"

@@ -2,9 +2,13 @@
 # common_imports.py
 
 # Import statements for common libraries/modules
+import pathlib
+script_directory = pathlib.Path(__file__).parent.resolve()
 
 import netCDF4 as nc
 import importlib
+
+import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
 import matplotlib.dates as dates
@@ -22,6 +26,7 @@ from scipy.interpolate import interp1d, interp2d
 import scienceplots
 from numba import jit
 from itertools import groupby, product
+import torch
 
 from rpgpy import read_rpg, spectra2moments
 
@@ -235,7 +240,6 @@ def smooth(y, box_pts, padding='constant'):
 
 
 def compute_llt_lwp(rg, temperature, pressure, lwp, liquid_masks, n_smoothing=60, idk_factor=1.5):
-        import pandas as pd
         rg_res = np.mean(np.diff(rg)) * 0.001
 
         # liquid water content

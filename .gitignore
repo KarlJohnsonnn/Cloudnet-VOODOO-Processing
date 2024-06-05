@@ -2,6 +2,7 @@ __pycache__/
 depricated/
 plots/
 wandb/
+more_sample_data/
 Loader.py
 Utils.py
 voodoo_ROC.py

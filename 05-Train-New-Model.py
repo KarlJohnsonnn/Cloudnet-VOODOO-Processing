@@ -9,18 +9,18 @@ options = utils.VoodooOptions(
 
 
 training_options = utils.VoodooTrainingOptions(
-    epochs=3,
-    batch_size=256,
+    epochs=5,
+    batch_size=4096,
     wandb=utils.WandbConfig(
-        project='eriswil',
-        name='voodoonet-training-Y2022-2024-10pct',
+        project='voodoo2.5',
+        name='voodoo-4sites-model',
         entity='krljhnsn'
     ),
 )
 
 # create a lambda function that returns the training data set file for given year
-training_data_set = f'../training-data-set-Y2022-2024-10pct.pt'
-new_model_file = f'eriswil-model-Y2022-2024-10pct-{options.device}.pt'
+training_data_set = f'/data/voodoo-trainings-data/training-data-set-EW-LE-LE-PA-01.pt'
+new_model_file = f'Voodoo-4sites-model-{options.device}.pt'
 
 voodoonet.train(
     training_data_set, 

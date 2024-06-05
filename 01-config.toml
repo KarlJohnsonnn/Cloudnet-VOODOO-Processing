@@ -1,0 +1,41 @@
+# template:
+# [site]
+#     radar_path = "/path/to/radar/data/Y{y}/M{m}/D{d}/"                        # folder path to daily radar data (24 files)
+#     lidar_path = "/path/to/lidar/data/Y{y}/M{m}/{date}_*_CHX090111.nc"        # file path to daily ceilometer data
+#     mwr_path = "/path/to/mwr/data/Y{y}/M{m}/D{d}/"                            # path to daily mwr data (18 files)
+#     output_root = "/path/to/output/"                                          
+#     altitude = 0
+#     lidar_glob = true                                                         # if lidar_path is a glob.glob() pattern
+
+
+[eriswil]
+    radar_path = "/data/eriswil/instruments/rpg94/Y{y}/M{m}/D{d}/"
+    lidar_path = "/data/eriswil/instruments/chm15k/{y}/{m}/{date}_*_CHX090111.nc"
+    mwr_path = "/data/eriswil/instruments/hatpro/Y{y}/M{m}/D{d}/"
+    output_root = "/data/eriswil/cloudnet/v1.61.10/"
+    altitude = 921
+    lidar_glob = true
+
+[leipzig-tropos]
+    radar_path = "/data/LACROS/leipzig-tropos/instruments/rpg94/Y{y}/M{m}/D{d}/"
+    lidar_path = "/data/LACROS/leipzig-tropos/instruments/chm15k/{y}/{m}/{date}_*_CHX090111.nc"
+    mwr_path = "/data/LACROS/leipzig-tropos/instruments/hatpro/Y{y}/M{m}/D{d}/"
+    output_root = "/data/LACROS/leipzig-tropos/cloudnet/v1.61.10/"
+    altitude = 126
+    lidar_glob = true
+
+[leipzig-lim]
+    radar_path = "/data/leipzig/instruments/limrad94/Y{y}/M{m}/D{d}/"
+    lidar_path = "/data/leipzig/instruments/ceilim/data/Y{y}/M{m}/{date}_Leipzig_CHM200114_000.nc"
+    mwr_path = "/data/leipzig/instruments/limhat/Y{y}/M{m}/D{d}/"
+    output_root = "/data/leipzig/cloudnet/v1.61.10/"
+    altitude = 126
+    lidar_glob = false
+
+[punta-arenas]
+    radar_path = "/data/LACROS/limrad94/data/Y{y}/M{m}/D{d}/"
+    lidar_path = "/data/LACROS/cloudnet/data/punta-arenas/calibrated/chm15x/{y}/{date}_punta-arenas_chm15x.nc"
+    mwr_path = "/data/LACROS/hatpro/Y{y}/M{m}/D{d}/"
+    output_root = "/data/LACROS/cloudnet/data/punta-arenas/v1.61.10/"
+    altitude = 9
+    lidar_glob = false

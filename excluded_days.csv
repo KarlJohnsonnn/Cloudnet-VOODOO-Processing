@@ -1,0 +1,117 @@
+YYYYMMDD,info
+20201218,low lwp
+20201219,low lwp
+20201219,low lwp
+20201227,dow lwp
+20210103,no valid lidar
+20210104,no valid lidar
+20210105,no valid lidar
+20210109,no valid lidar
+20210111,no valid lidar
+20210209,weird lwp
+20210212,weird lwp
+20210213,weird lwp
+20210214,weird lwp
+20210215,weird lwp
+20210216,weird lwp
+20210218,weird lwp
+20210219,weird lwp
+20210220,weird lwp
+20210221,crane entire day
+20210222,crane & missing data
+20210223,insects
+20210224,insects only
+20210225,insects
+20210227,no valid lidar
+20210302,fog or wet radome
+20210303,low lwp
+20210311,low lwp
+20210326,low lwp
+20210330,insects
+20210331,insects
+20210409,low lwp
+20210426,insects & low lwp
+20210427,low lwp
+20210428,insects
+20210504,crane
+20210508,crane
+20210509,insects & crane
+20210510,insects & crane
+20210517,crane
+20210530,insects
+20210531,insects
+20210601,low lwp & insects
+20210617,insects
+20210618,insects
+20210619,insects
+20210620,crane & prepicpitaiton & insects
+20210621,insects & prepicpitaiton
+20210626,insects & prepicpitaiton
+20210627,insects & prepicpitaiton
+20210630,insects & prepicpitaiton
+20210704,low lwp & missing data
+20210707,low lwp & missing data
+20210708,low lwp & missing data
+20210713,Insects & precipitation only
+20210714,Lwp missing
+20210718,Insects & weird lwp
+20210723,Insects & super shallow liq. Cloud 
+20210724,insects & low lwp
+20210725,precipitation & crane artifacts
+20210730,crane
+20210731,tiny liq. clouds & insects
+20210814,insects only
+20210815,cirrus only & insects
+20210821,tiny liq. clouds & insects
+20210903,insects only
+20210908,insects only
+20210909,insects only 
+20210930,insects & cirrus only
+20211001,insects & cirrus only
+20211007,insects only
+20211009,insects only
+20211010,insects only
+20211024,insects only
+20211025,cirrus only
+20211028,insects only
+20211029,insects & cirrus only
+20211031,insects & cirrus only
+20211110,cirrus only
+20211111,insects only
+20211112,missing data & lidar attenuated
+20220101,weird lwp
+20220102,precipitation only
+20220103,precipitation only
+20220104,precipitation only
+20220105,precipitation only
+20220227,insects & lidar attenuated
+20220301,cirrus only
+20220302,cirrus only
+20220308,cirrus only & missing data
+20220309,missing data
+,
+,
+,
+20181128,low lwp & insects & missing data
+20190425,low lwp
+20190503,MDF change
+20190504,low lwp
+20190508,low lwp
+20190518,MDF change
+20190519,MDF change
+20190522,MDF change
+20190611,MDF change
+20190615,MDF change
+20190616,MDF change
+20190625,MDF change
+20190626,MDF change
+20190717,low lwp
+20190719,low lwp
+20190720,low lwp & strong ghost echos
+20190722,low lwp & ghost echos
+20190812,low lwp
+20190817,low lwp
+20190818,low lwp
+20190819,low lwp
+20190820,low lwp
+20190907,low lwp

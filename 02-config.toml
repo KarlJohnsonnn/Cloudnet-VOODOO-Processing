@@ -1,0 +1,47 @@
+# example, given date (str) in format "YYYYMMDD", and y, m, d as characters with leeding 0: 
+# [site]
+    # radar_path = "/path/to/radar/data/Y{y}/M{m}/D{d}/"
+    # lidar_path = "/path/to/lidar/data/Y{y}/M{m}/{date}_*.nc"
+    # mwr_path = "/path/to/mwr/data/Y{y}/M{m}/D{d}/"
+    # model_path = "/path/to/model/data/{y}/{m}/{date}_model.nc"
+    # lv0_path = "/path/to/lv0/data/Y{y}/{date[2:]}_*.LV0"
+    # output_root = "/path/to/output/"
+    # altitude = 0
+
+
+
+[eriswil]
+    radar_path = "/data/eriswil/cloudnet/v1.61.10/radar/"
+    lidar_path = "/data/eriswil/cloudnet/v1.61.10/lidar/"
+    mwr_path = "/data/eriswil/cloudnet/v1.61.10/mwr/"
+    model_path = "/data/eriswil/cloudnet/v1.61.10/model/ecmwf/"
+    lv0_path = "/data/eriswil/instruments/rpg94/Y{y}/M{m}/D{d}/{date[2:]}_*.LV0"
+    output_root = "/data/eriswil/cloudnet/v1.61.10/products/"
+    altitude = 921
+
+[leipzig-tropos]
+    radar_path = "/data/LACROS/leipzig-tropos/cloudnet/v1.61.10/radar/"
+    lidar_path = "/data/LACROS/leipzig-tropos/cloudnet/v1.61.10/lidar/"
+    mwr_path = "/data/LACROS/leipzig-tropos/cloudnet/v1.61.10/mwr/"
+    model_path = "/data/LACROS/leipzig-tropos/cloudnet/v1.61.10/model/ecmwf/"
+    lv0_path = "/data/LACROS/leipzig-tropos/instruments/rpg94/Y{y}/M{m}/D{d}/{date[2:]}_*.LV0"
+    output_root = "/data/LACROS/leipzig-tropos/cloudnet/v1.61.10/products/"
+    altitude = 126
+
+[punta-arenas]
+    radar_path = "/data/LACROS/cloudnet/data/punta-arenas/v1.61.10/radar/"
+    lidar_path = "/data/LACROS/cloudånet/data/punta-arenas/v1.61.10/lidar/"
+    mwr_path = "/data/LACROS/cloudnet/data/punta-arenas/v1.61.10/mwr/"
+    model_path = "/data/LACROS/cloudnet/data/punta-arenas/v1.61.10/model/ecmwf/"
+    lv0_path = "/data/LACROS/leipzig-tropos/instruments/rpg94/Y{y}/M{m}/D{d}/{date[2:]}_*.LV0"
+    output_root = "/data/LACROS/cloudnet/data/punta-arenas/v1.61.10/products/"
+    altitude = 9
+
+[leipzig-lim]
+    radar_path = "/data/leipzig/cloudnet/v1.61.10/radar/"
+    lidar_path = "/data/leipzig/cloudnet/v1.61.10/lidar/"
+    mwr_path = "/data/leipzig/cloudnet/v1.61.10/mwr/"
+    model_path = "/data/leipzig/cloudnet/v1.61.10/model/ecmwf/"
+    lv0_path = "/data/LACROS/leipzig-tropos/instruments/rpg94/Y{y}/M{m}/D{d}/{date[2:]}_*.LV0"
+    output_root = "/data/leipzig/cloudnet/v1.61.10/products/"
+    altitude = 126
