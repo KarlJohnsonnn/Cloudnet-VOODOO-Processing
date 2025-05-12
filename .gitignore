@@ -3,6 +3,7 @@ depricated/
 plots/
 wandb/
 more_sample_data/
+sample_data/rpg-fmcw-94/
 Loader.py
 Utils.py
 voodoo_ROC.py
