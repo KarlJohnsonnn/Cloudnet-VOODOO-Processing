@@ -65,7 +65,7 @@ def get_cloudnet_cmap():
 
     return cloudnet_class_labels, cloudnet_class_colors
 
-def create_cloudnet_voodoo_categorize(categorize_file, classification_file, model_name, probability_liquid):
+def create_cloudnet_voodoo_categorize(categorize_file, classification_file, model_name, probability_liquid, liquid_threshold=0.5):
 
     # load the original categorize file
     cat_xr = xr.open_dataset(categorize_file, decode_times=False)
@@ -73,7 +73,7 @@ def create_cloudnet_voodoo_categorize(categorize_file, classification_file, mode
     status = class_xr['detection_status'].values
 
     values = np.zeros(probability_liquid.shape)
-    voodoo_liquid_mask = probability_liquid > 0.5
+    voodoo_liquid_mask = probability_liquid > liquid_threshold
     values[voodoo_liquid_mask] = 1.0
 
     cat_xr['category_bits'].values = _adjust_cloudnetpy_bits(cat_xr, values, status)

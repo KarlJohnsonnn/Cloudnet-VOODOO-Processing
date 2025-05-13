@@ -2,6 +2,19 @@
 
 ---
 
+Future applications:
+- VOODOO for arctic data sets
+- LSC BioSmoke data sets
+- add reader for other Doppler radar devices
+  - MIRA35
+  - KAZR
+  - MMCR
+
+ToDo:
+- add option to setup GPU for cloudnet-processing when calling `generate_categorize`
+- better naming convention for model/training parameters, e.g. `split` --> `training_split` for class VoodooOptions
+- find where and how to add metric information for `wandb` monitoring
+
 This repository resambles the analysis done by [Schimmel et al. 2022](https://amt.copernicus.org/articles/15/5343/2022/).
 
 Required packages:
@@ -37,3 +50,11 @@ cd Cloudnet-VOODOO-Processing
 pip install -r requirements.txt
 ```
 
+
+### 2. Use the jupyter notebooks for testing the code
+
+The following notebooks guide you through the VOODOO processing pipeline:
+
+1. **01-Download-Example-Data.ipynb**: Downloads example data needed for training and testing the model.
+2. **02-Generate-Trainingset.ipynb**: Creates the training dataset from the downloaded data.
+3. **03-Train-New-Model.ipynb**: Trains a new VOODOO model using the generated training dataset.

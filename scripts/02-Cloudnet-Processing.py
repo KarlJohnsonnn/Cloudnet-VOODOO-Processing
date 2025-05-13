@@ -9,7 +9,8 @@ y, m, d = str(date[:4]), str(date[4:6]).zfill(2), str(date[6:]).zfill(2)
 
 # Required Input Files
 input_files = {
-    #'lv0_files': glob.glob(f'/data/eriswil/rpg94/Y{date[:4]}/{date[2:]}_*.LV0'), 
+    # see: https://actris-cloudnet.github.io/cloudnetpy/api.html#categorize.generate_categorize
+    'lv0_files': glob.glob(f'/data/eriswil/rpg94/Y{date[:4]}/{date[2:]}_*.LV0'), 
     'radar': glob.glob(data_root + f'rpg94/{date}_eriswil_rpg-fmcw-94*.nc')[0],
     'lidar': glob.glob(data_root + f'ceilo/{date}_eriswil_chm15kx*.nc')[0],
     'model': glob.glob(data_root + f'model/{date}_eriswil_ecmwf*.nc')[0],
