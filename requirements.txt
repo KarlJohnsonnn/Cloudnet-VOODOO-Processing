@@ -11,3 +11,4 @@ torchvision>=0.15.0
 rpgpy>=0.12.0
 voodoonet>=0.1.0
 cloudnetpy>=1.1.0 
+ipykernel>=6.0.0
