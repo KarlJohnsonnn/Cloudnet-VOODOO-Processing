@@ -2,10 +2,10 @@ __pycache__/
 depricated/
 plots/
 wandb/
-more_sample_data/
-sample_data/training_datasets/
-sample_data/rpg-fmcw-94/
-sample_data/model_files/
+!more_sample_data/
+sample_data/training_datasets/*
+sample_data/rpg-fmcw-94/*
+sample_data/model_files/*
 Loader.py
 Utils.py
 voodoo_ROC.py
