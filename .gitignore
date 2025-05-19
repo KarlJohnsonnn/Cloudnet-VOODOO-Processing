@@ -3,12 +3,13 @@ depricated/
 plots/
 wandb/
 !/more_sample_data/
-/sample_data/training_datasets/*
-/sample_data/rpg-fmcw-94/*
-/sample_data/model_files/*
+sample_data/rpg-fmcw-94/*
+sample_data/model_files/*
 Loader.py
 Utils.py
 voodoo_ROC.py
 voodoo_preprocessor.py
 voodoo_test.py
 voodoo_train.py
+sample_data/.DS_Store
+sample_data/training_datasets/
